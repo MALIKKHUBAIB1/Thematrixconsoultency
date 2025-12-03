@@ -1,21 +1,18 @@
+import { motion } from "framer-motion";
+
 function AllCourseCard({ icon, title, description }) {
   return (
-    <div
-      className="
-        w-full max-w-[330px] min-h-[380px]
-        bg-[#000D51]
-        text-white
-        p-6 rounded-2xl
-        shadow-lg border border-transparent
-        flex flex-col items-center justify-between
-        transition-all duration-300 ease-out
-
-        hover:bg-white hover:text-[#000D51]
-        hover:border-[#000D51] hover:shadow-2xl
-      "
+    <motion.div
+      className="w-full max-w-[330px] min-h-[380px] bg-[#000D51] text-white p-6 rounded-2xl shadow-lg border border-transparent flex flex-col items-center justify-between transition-all duration-300 hover:bg-white hover:text-[#000D51] hover:border-[#000D51] hover:shadow-2xl"
+      initial={{ opacity: 0, y: 40 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.6 }}
+      viewport={{ once: true }}
     >
       {/* ICON */}
-      <div className="text-5xl mb-4 transition-all duration-300">{icon}</div>
+      <div className="text-5xl mb-4 transition-transform duration-300 hover:scale-110">
+        {icon}
+      </div>
 
       {/* TITLE */}
       <h2 className="text-2xl font-semibold text-center leading-snug">
@@ -28,19 +25,11 @@ function AllCourseCard({ icon, title, description }) {
       </p>
 
       {/* BUTTON */}
-      <button
-        className="
-          mt-4
-          bg-white text-[#000D51]
-          px-5 py-2 text-sm font-medium
-          rounded-md shadow-sm
-          hover:bg-[#000D51] hover:text-white
-          transition-all duration-300
-        "
-      >
+      <button className="mt-4 bg-white text-[#000D51] px-5 py-2 text-sm font-medium rounded-md shadow-sm hover:bg-[#000D51] hover:text-white transition-all duration-300">
         Details →
       </button>
-    </div>
+    </motion.div>
   );
 }
+
 export default AllCourseCard;

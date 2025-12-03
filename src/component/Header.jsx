@@ -1,14 +1,12 @@
 import Navbar from "./Navbar";
-import CrousleSection from "./CrousleSection";
 
 function Header() {
   return (
-    <div className="bg-[#000D51] text-white w-full h-[680px]">
-      <div className="w-[80%] mx-auto">
+    <header className="bg-[#000D51] text-white w-full">
+      <div className="max-w-7xl mx-auto px-4">
         <Navbar />
-        <CrousleSection />
       </div>
-    </div>
+    </header>
   );
 }
 
