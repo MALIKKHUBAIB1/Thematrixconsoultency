@@ -1,5 +1,8 @@
-import { useEffect, useRef, useState } from "react";
+// Testimonial.jsx
+import { useEffect, useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import TestimonialCard from "./TestimonalCard";
+
 const TESTIMONIAL_DATA = [
   {
     name: "Lorene Hudson",
@@ -29,22 +32,31 @@ const TESTIMONIAL_DATA = [
 
 function Testimonial() {
   const [current, setCurrent] = useState(0);
-  const timer = useRef(null);
 
   // Auto slide logic
   useEffect(() => {
-    timer.current = setTimeout(() => {
+    const timer = setTimeout(() => {
       setCurrent((prev) =>
         prev >= TESTIMONIAL_DATA.length - 1 ? 0 : prev + 1
       );
-    }, 2000);
+    }, 4000); // 4s delay for better readability
 
-    return () => clearTimeout(timer.current);
+    return () => clearTimeout(timer);
   }, [current]);
 
   return (
-    <div className="w-[90%] md:w-[80%] mx-auto my-10">
-      <TestimonialCard data={TESTIMONIAL_DATA[current]} />
+    <div className="w-[90%] md:w-[80%] mx-auto my-16">
+      <AnimatePresence mode="wait">
+        <motion.div
+          key={current}
+          initial={{ opacity: 0, x: 50 }}
+          animate={{ opacity: 1, x: 0 }}
+          exit={{ opacity: 0, x: -50 }}
+          transition={{ duration: 0.8, ease: "easeInOut" }}
+        >
+          <TestimonialCard data={TESTIMONIAL_DATA[current]} />
+        </motion.div>
+      </AnimatePresence>
     </div>
   );
 }

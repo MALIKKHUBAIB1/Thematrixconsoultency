@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   Landmark,
   Banknote,
@@ -11,6 +11,7 @@ import {
 
 function Partner() {
   const scrollRef = useRef(null);
+  const [isHovering, setIsHovering] = useState(false);
 
   const BANKS = [
     { name: "Axis Bank", icon: <Landmark size={48} /> },
@@ -22,7 +23,6 @@ function Partner() {
     { name: "Other Banks", icon: <Wallet size={48} /> },
   ];
 
-  // Duplicate cards for infinite loop scroll
   const LOOP_BANKS = [...BANKS, ...BANKS];
 
   useEffect(() => {
@@ -30,11 +30,13 @@ function Partner() {
     let scrollSpeed = 1;
 
     const move = () => {
-      if (!container) return;
+      if (!container || isHovering) {
+        requestAnimationFrame(move);
+        return;
+      }
 
       container.scrollLeft += scrollSpeed;
 
-      // Reset to center when reaching half
       if (container.scrollLeft >= container.scrollWidth / 2) {
         container.scrollLeft = 0;
       }
@@ -43,16 +45,18 @@ function Partner() {
     };
 
     requestAnimationFrame(move);
-  }, []);
+  }, [isHovering]);
 
   return (
-    <div className="w-full pt-6">
+    <div className="w-full pt-6 bg-gray-50">
       <h2 className="text-4xl font-bold text-[#0c2d59] px-4 mb-6 text-center">
-        Our Partnet we Work with
+        Our Partners We Work With
       </h2>
 
       <div
         ref={scrollRef}
+        onMouseEnter={() => setIsHovering(true)}
+        onMouseLeave={() => setIsHovering(false)}
         className="flex gap-6 overflow-x-hidden px-4 pb-4"
         style={{ whiteSpace: "nowrap" }}
       >
@@ -61,27 +65,26 @@ function Partner() {
             key={index}
             className="
               min-w-[220px] 
-              h-[180px]
+              h-[180px] 
               bg-white 
               shadow-md 
               rounded-xl 
-              p-6
+              p-6 
               border 
               hover:border-[#0c2d59] 
               hover:shadow-xl 
-              duration-300 
               transform 
-              hover:scale-105
-              flex
-              flex-col
-              items-center
-              justify-center
+              hover:scale-105 
+              duration-300 
+              flex 
+              flex-col 
+              items-center 
+              justify-center 
               shrink-0
             "
           >
             <div className="mb-3 text-[#0c2d59]">{item.icon}</div>
-
-            <p className="font-semibold text-gray-800 text-lg text-center ">
+            <p className="font-semibold text-gray-800 text-lg text-center">
               {item.name}
             </p>
           </div>
