@@ -70,9 +70,11 @@ function Navbar() {
         </ul>
 
         {/* DESKTOP BUTTON */}
-        <button className="hidden md:block px-6 py-2 border border-white hover:bg-white hover:text-[#000D51] transition">
-          Get in touch
-        </button>
+        <Link to="/form">
+          <button className="hidden md:block px-6 py-2 border border-white hover:bg-white hover:text-[#000D51] transition">
+            Get in touch
+          </button>
+        </Link>
 
         {/* MOBILE ICON */}
         <button className="md:hidden" onClick={() => setOpen(!open)}>
