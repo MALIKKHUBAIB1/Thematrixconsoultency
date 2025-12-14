@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { Menu, X } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
+import logo from "../assets/logo.png";
 
 function Navbar() {
   const [open, setOpen] = useState(false);
@@ -16,7 +17,6 @@ function Navbar() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  // ACTIVE LINK STYLE
   const isActive = (path) =>
     location.pathname === path
       ? "text-blue-400 border-b-2 border-blue-400 pb-1"
@@ -24,6 +24,8 @@ function Navbar() {
 
   return (
     <motion.nav
+      role="navigation"
+      aria-label="Main Navigation"
       className={`fixed w-full top-0 left-0 z-50 bg-[#000D51] text-white transition-all ${
         scrolled ? "shadow-lg" : ""
       }`}
@@ -31,19 +33,20 @@ function Navbar() {
       animate={{ y: 0 }}
       transition={{ duration: 0.6 }}
     >
+      {/* SEO H1 (hidden visually but useful for Google) */}
+      <h1 className="sr-only">
+        Matrix Services – Banking Career & Job Assistance
+      </h1>
+
       <div className="max-w-7xl mx-auto flex items-center justify-between px-4 md:px-0 h-20">
-        {/* LOGO */}
-        <div className="flex items-center gap-3">
+        {/* LOGO (SEO LINK) */}
+        <Link to="/" className="flex items-center gap-3">
           <img
-            src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png"
-            alt="logo"
-            className="w-10 h-10"
+            src={logo}
+            alt="Matrix Services Logo - Banking Career Guidance"
+            className="w-40 h-18 rounded-2xl"
           />
-          <div className="leading-tight">
-            <h1 className="text-xl font-semibold">Matrix</h1>
-            <p className="text-sm text-gray-300">Consultancy</p>
-          </div>
-        </div>
+        </Link>
 
         {/* DESKTOP MENU */}
         <ul className="hidden md:flex gap-10 text-lg">
@@ -54,7 +57,7 @@ function Navbar() {
           </li>
           <li>
             <Link to="/services" className={isActive("/services")}>
-              Service
+              Services
             </Link>
           </li>
           <li>
@@ -69,13 +72,22 @@ function Navbar() {
           </li>
         </ul>
 
-        {/* DESKTOP BUTTON */}
-        <button className="hidden md:block px-6 py-2 border border-white hover:bg-white hover:text-[#000D51] transition">
-          Get in touch
-        </button>
+        {/* ADMIN BUTTON */}
+        <Link to="/admin/login">
+          <button
+            aria-label="Admin Login"
+            className="hidden md:block px-6 py-2 border border-white hover:bg-white hover:text-[#000D51] transition"
+          >
+            Admin Login
+          </button>
+        </Link>
 
         {/* MOBILE ICON */}
-        <button className="md:hidden" onClick={() => setOpen(!open)}>
+        <button
+          className="md:hidden"
+          aria-label="Toggle Menu"
+          onClick={() => setOpen(!open)}
+        >
           {open ? <X size={28} /> : <Menu size={28} />}
         </button>
       </div>
@@ -103,7 +115,7 @@ function Navbar() {
                   onClick={closeMenu}
                   className={isActive("/services")}
                 >
-                  Service
+                  Services
                 </Link>
               </li>
               <li>
@@ -125,10 +137,11 @@ function Navbar() {
                 </Link>
               </li>
             </ul>
-
-            <button className="mx-auto block px-6 py-2 mb-6 border border-white hover:bg-white hover:text-[#000D51] transition">
-              Get in touch
-            </button>
+            <Link to="admin/login">
+              <button className="mx-auto block px-6 py-2 mb-6 border border-white hover:bg-white hover:text-[#000D51] transition">
+                Admin Login
+              </button>
+            </Link>
           </motion.div>
         )}
       </AnimatePresence>

@@ -1,9 +1,31 @@
 import { motion } from "framer-motion";
 import { ChevronRight } from "lucide-react";
+import { Link } from "react-router-dom";
+import manImg from "../assets/man.png";
+import { Helmet } from "react-helmet-async";
 
 function CrousleSection() {
   return (
     <section className="bg-[#000D51] text-white py-16">
+      {/* SEO META */}
+      <Helmet>
+        <title>Matrix Service | Your Gateway to Banking Careers</title>
+        <meta
+          name="description"
+          content="Matrix Service helps you unlock opportunities in top private sector banks like Axis, HDFC, ICICI, Kotak, and Yes Bank. Expert guidance, career support, and training included."
+        />
+        <meta
+          name="keywords"
+          content="Banking Jobs, Private Bank Careers, Career Guidance, Matrix Service, Banking Training"
+        />
+        <meta property="og:title" content="Matrix Service | Banking Careers" />
+        <meta
+          property="og:description"
+          content="Unlock opportunities in private banks with Matrix Service. Career guidance, training, and support for your success."
+        />
+        <meta property="og:image" content={manImg} />
+      </Helmet>
+
       <div className="max-w-7xl mx-auto px-4 flex flex-col md:flex-row justify-between items-center gap-12">
         {/* LEFT SECTION */}
         <motion.div
@@ -13,8 +35,8 @@ function CrousleSection() {
           transition={{ duration: 0.8, ease: "easeOut" }}
           viewport={{ once: true }}
         >
-          <p className="text-sm text-gray-300 uppercase tracking-widest">
-            The Matrix Consultancy
+          <p className="text-xl text-gray-300 uppercase tracking-widest my-4">
+            Matrix Service
           </p>
 
           <h1 className="text-4xl md:text-5xl font-bold leading-tight">
@@ -61,12 +83,16 @@ function CrousleSection() {
             transition={{ delay: 0.6 }}
             viewport={{ once: true }}
           >
-            <button className="px-6 py-3 bg-white text-[#000D51] font-semibold rounded-md shadow hover:scale-105 transition-transform">
-              Apply Now
-            </button>
-            <button className="px-6 py-3 border border-white rounded-md shadow hover:bg-white hover:text-[#000D51] transition">
-              Learn More
-            </button>
+            <Link to="/contact">
+              <button className="px-6 py-3 bg-white text-[#000D51] font-semibold rounded-md shadow hover:scale-105 transition-transform">
+                Contact us
+              </button>
+            </Link>
+            <Link to="/about">
+              <button className="px-6 py-3 border border-white rounded-md shadow hover:bg-white hover:text-[#000D51] transition">
+                About us
+              </button>
+            </Link>
           </motion.div>
         </motion.div>
 
@@ -79,9 +105,9 @@ function CrousleSection() {
           viewport={{ once: true }}
         >
           <img
-            src="https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?auto=format&fit=crop&w=900&q=80"
-            alt="banking career"
-            className="w-full h-auto md:h-[450px] object-cover"
+            src={manImg}
+            alt="Matrix Service - Banking Career Guidance"
+            className="w-full h-auto md:h-[550px]"
           />
         </motion.div>
       </div>

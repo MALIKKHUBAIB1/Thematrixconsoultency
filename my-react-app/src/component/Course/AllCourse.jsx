@@ -20,7 +20,8 @@ function AllCourse() {
     >
       {ALL_COURSES.map((course, index) => (
         <AllCourseCard
-          key={index}
+          key={course.id}
+          id={course.id}
           icon={course.icon}
           title={course.title}
           description={course.description}

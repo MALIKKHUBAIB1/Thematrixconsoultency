@@ -1,62 +1,171 @@
-// Testimonial.jsx
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import TestimonialCard from "./TestimonalCard";
-
-const TESTIMONIAL_DATA = [
-  {
-    name: "Lorene Hudson",
-    position: "CEO / Ritchie Group",
-    feedback:
-      "Suscipit feugiat purus ac nunc amet. Id pulvinar arcu nibh orci non rhoncus lobortis id neque.",
-    image:
-      "https://images.unsplash.com/photo-1607746882042-944635dfe10e?w=900&q=80",
-  },
-  {
-    name: "John Carter",
-    position: "Software Engineer / TechNova",
-    feedback:
-      "Integer malesuada curabitur vel interdum leo justo at ultricies. Sit aliquet tempus elementum ac.",
-    image:
-      "https://images.unsplash.com/photo-1595152772835-219674b2a8a6?w=900&q=80",
-  },
-  {
-    name: "Priya Sharma",
-    position: "UI/UX Designer / CreativeHub",
-    feedback:
-      "Laoreet sed aliquam sed dui, justo eu condimentum. Proin et urna magna fusce eu malesuada sapien.",
-    image:
-      "https://images.unsplash.com/photo-1531123897727-8f129e1688ce?w=900&q=80",
-  },
-];
+import { ChevronLeft, ChevronRight, Quote } from "lucide-react";
+import TestimonialCard from "../Testimonals/TestimonalCard";
+import api from "../../../utils/api"; // 👈 axios instance
 
 function Testimonial() {
+  const [testimonials, setTestimonials] = useState([]);
   const [current, setCurrent] = useState(0);
+  const [direction, setDirection] = useState(0);
+  const [isAutoPlaying, setIsAutoPlaying] = useState(true);
+  const [loading, setLoading] = useState(true);
 
-  // Auto slide logic
+  // ✅ FETCH REAL DATA
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setCurrent((prev) =>
-        prev >= TESTIMONIAL_DATA.length - 1 ? 0 : prev + 1
-      );
-    }, 4000); // 4s delay for better readability
+    const fetchTestimonials = async () => {
+      try {
+        const res = await api.get("/testimonials");
+        if (res.data.success) {
+          const list = Object.entries(res.data.testimonials || {}).map(
+            ([id, t]) => ({
+              id,
+              ...t,
+            })
+          );
+          setTestimonials(list);
+        }
+      } catch (err) {
+      } finally {
+        setLoading(false);
+      }
+    };
 
+    fetchTestimonials();
+  }, []);
+
+  const nextSlide = () => {
+    setDirection(1);
+    setCurrent((prev) => (prev >= testimonials.length - 1 ? 0 : prev + 1));
+  };
+
+  const prevSlide = () => {
+    setDirection(-1);
+    setCurrent((prev) => (prev === 0 ? testimonials.length - 1 : prev - 1));
+  };
+
+  const goToSlide = (index) => {
+    setDirection(index > current ? 1 : -1);
+    setCurrent(index);
+  };
+
+  // Auto slide
+  useEffect(() => {
+    if (!isAutoPlaying || testimonials.length === 0) return;
+
+    const timer = setTimeout(nextSlide, 5000);
     return () => clearTimeout(timer);
-  }, [current]);
+  }, [current, isAutoPlaying, testimonials.length]);
+
+  const slideVariants = {
+    enter: (direction) => ({
+      x: direction > 0 ? 1000 : -1000,
+      opacity: 0,
+      scale: 0.8,
+    }),
+    center: { x: 0, opacity: 1, scale: 1, zIndex: 1 },
+    exit: (direction) => ({
+      x: direction < 0 ? 1000 : -1000,
+      opacity: 0,
+      scale: 0.8,
+      zIndex: 0,
+    }),
+  };
+
+  if (loading || testimonials.length === 0) return null;
 
   return (
-    <div className="w-[90%] md:w-[80%] mx-auto my-16">
-      <AnimatePresence mode="wait">
+    <div className="w-full py-20 bg-gradient-to-br from-blue-50 to-indigo-50 relative overflow-hidden">
+      {/* Decorative bg */}
+      <div className="absolute top-10 left-10 w-72 h-72 bg-blue-100 rounded-full blur-3xl opacity-70 animate-pulse"></div>
+      <div className="absolute bottom-10 right-10 w-96 h-96 bg-indigo-100 rounded-full blur-3xl opacity-70 animate-pulse delay-1000"></div>
+
+      <div className="max-w-7xl mx-auto px-4 relative">
+        {/* Header */}
         <motion.div
-          key={current}
-          initial={{ opacity: 0, x: 50 }}
-          animate={{ opacity: 1, x: 0 }}
-          exit={{ opacity: 0, x: -50 }}
-          transition={{ duration: 0.8, ease: "easeInOut" }}
+          initial={{ opacity: 0, y: -30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6 }}
+          className="text-center mb-16"
         >
-          <TestimonialCard data={TESTIMONIAL_DATA[current]} />
+          <div className="inline-flex items-center gap-2 bg-blue-100 text-blue-700 px-4 py-2 rounded-full mb-4">
+            <Quote className="w-4 h-4" />
+            <span className="text-sm font-semibold">Client Stories</span>
+          </div>
+          <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
+            What Our <span className="text-blue-600">Clients Say</span>
+          </h2>
+          <p className="text-gray-600 text-lg">
+            Trusted by forward-thinking companies worldwide
+          </p>
         </motion.div>
-      </AnimatePresence>
+
+        {/* Slider */}
+        <div className="relative">
+          <AnimatePresence mode="wait" custom={direction}>
+            <motion.div
+              key={testimonials[current].id}
+              custom={direction}
+              variants={slideVariants}
+              initial="enter"
+              animate="center"
+              exit="exit"
+              transition={{
+                x: { type: "spring", stiffness: 300, damping: 30 },
+                opacity: { duration: 0.4 },
+                scale: { duration: 0.4 },
+              }}
+            >
+              <TestimonialCard data={testimonials[current]} />
+            </motion.div>
+          </AnimatePresence>
+
+          {/* Controls */}
+          <div className="flex justify-center items-center gap-8 mt-12">
+            <button
+              onClick={prevSlide}
+              onMouseEnter={() => setIsAutoPlaying(false)}
+              onMouseLeave={() => setIsAutoPlaying(true)}
+              className="p-3 rounded-full bg-white shadow-lg hover:scale-110 transition"
+            >
+              <ChevronLeft />
+            </button>
+
+            <div className="flex gap-3">
+              {testimonials.map((_, i) => (
+                <button key={i} onClick={() => goToSlide(i)}>
+                  <div
+                    className={`w-3 h-3 rounded-full ${
+                      current === i ? "bg-blue-600" : "bg-gray-300"
+                    }`}
+                  />
+                </button>
+              ))}
+            </div>
+
+            <button
+              onClick={nextSlide}
+              onMouseEnter={() => setIsAutoPlaying(false)}
+              onMouseLeave={() => setIsAutoPlaying(true)}
+              className="p-3 rounded-full bg-white shadow-lg hover:scale-110 transition"
+            >
+              <ChevronRight />
+            </button>
+          </div>
+
+          {/* Progress */}
+          <div className="mt-8 max-w-md mx-auto">
+            <motion.div
+              key={current}
+              initial={{ width: "0%" }}
+              animate={{ width: "100%" }}
+              transition={{ duration: 5, ease: "linear" }}
+              className="h-1 bg-gradient-to-r from-blue-500 to-indigo-500 rounded-full"
+            />
+          </div>
+        </div>
+      </div>
     </div>
   );
 }
